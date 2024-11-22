@@ -9,10 +9,6 @@ X=traindf.drop(["SalePrice"],inplace=False,axis=1)
 y=traindf["SalePrice"]
 
 
-x=cleanup(X)
-
-
-print(x.head())
 
 def cleanup(X):
     for i in range(len(X)):
@@ -33,3 +29,4 @@ def cleanup(X):
 
     return X
 
+x=cleanup(X)
