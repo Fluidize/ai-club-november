@@ -1,6 +1,10 @@
 import pandas as pd
-import sklearn
+from sklearn.neural_network import MLPRegressor
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+MLP=MLPRegressor()
+scaler=StandardScaler()
+
 
 traindf=pd.read_csv("train.csv",index_col=0)
 
@@ -36,4 +40,26 @@ def cleanup(X,column):
 X=cleanup(X,cols)
 print(X.head)
 
+"""
+run=MLP.fit_transform(X)"""
 
+MLP.fit(X,y)
+
+
+
+
+testdf=pd.read_csv("test.csv",index_col=0)
+Xtest=testdf
+testcols=Xtest.columns.tolist()
+
+Xtest=cleanup(Xtest,testcols)
+print(Xtest.head)
+
+
+prediction=pd.DataFrame(MLP.predict(Xtest), columns = ["SalePrice"])
+
+prediction.index.name = "Id"
+
+prediction.index+=1461
+
+prediction.to_csv("housePrediction.csv")
