@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.neural_network import MLPRegressor
-
-model=MLPRegressor(max_iter=500)
+#0.05 , 0.005, 0.00051
+model=MLPRegressor(alpha=0.00051,max_iter=1500)
 
 traindf=pd.read_csv("train.csv",index_col=0)
 
