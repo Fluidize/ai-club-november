@@ -1,38 +1,47 @@
 import pandas as pd
-import sklearn.neural_network as MLPClassifier
-import numpy as np
+from sklearn.neural_network import MLPRegressor
 
-traindf = pd.read_csv("train.csv").drop(["Id"], inplace=False, axis=1)
+model=MLPRegressor(max_iter=500)
 
-#cleanup
-traindf.drop(["MSZoning", "Alley", "Neighborhood"], axis=1)
+traindf=pd.read_csv("train.csv",index_col=0)
 
-#df.loc[x, col_name] safer access
-for x in range(len(traindf["Street"])):
-    index = traindf["Street"]
-    if index == "Pave":
-        traindf.loc[x, "Street"] = 0
-    elif index == "Grvl":
-        traindf.loc[x, "Street"] = 1
+X=traindf.drop(["SalePrice"],inplace=False,axis=1)
+y=traindf["SalePrice"]
 
-for x in range(len(traindf["HouseStyle"])):
-    index = traindf["HouseStyle"][x]
-    if index == "1Story":
-        traindf.loc[x, "HouseStyle"] = 0
-    elif index == "2Story":
-        traindf.loc[x, "HouseStyle"] = 1
+def cleanup(X,column):
+    for i in range(len(column)):
+        data=X[column[i]].tolist()
+    
+        if (type(data[0])!=int):
+            sets=set(data)
+            lib={}
+            count=0
 
-for x in range(len(traindf["LotShape"])):
-    index = traindf["LotShape"][x]
-    if index == "Reg":
-        traindf["LotShape"][x] = 0
-    if index == "IR1":
-        traindf["LotShape"][x] = 1
-    if index == "IR2": 
-        traindf["LotShape"][x] = 2
+            for j in sets:
+                lib.update({j:count})
+                count+=1
 
+            for k in range(len(data)):
+                data[k]=lib[data[k]]
+            X[column[i]]=data
 
-X = traindf.drop(["SalePrice"], axis=1)
-y = traindf["SalePrice"]
+    return X
 
-print(traindf["HouseStyle"])
+cols=X.columns.tolist()
+X=cleanup(X,cols)
+
+print('TRAINING')
+model.fit(X,y)
+
+testdf=pd.read_csv("test.csv",index_col=0)
+
+testcols=testdf.columns.tolist()
+testdf=cleanup(testdf,testcols)
+
+prediction=pd.DataFrame(model.predict(testdf), columns = ["SalePrice"])
+
+prediction.index.name = "Id"
+
+prediction.index+=1461
+
+prediction.to_csv("prediction.csv")
