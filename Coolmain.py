@@ -81,5 +81,5 @@ predictorion=pd.DataFrame(MLP.predict(Xtest), columns = ["SalePrice"])
 predictorion.index.name = "Id"
 
 predictorion.index+=1461
-
+print(predictorion.head)
 predictorion.to_csv("housePredictorion.csv")
