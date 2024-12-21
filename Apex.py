@@ -1,10 +1,11 @@
 import pandas as pd
 from sklearn.neural_network import MLPRegressor
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+import random
+from sklearn.model_selection import train_test_split
 
-MLP=MLPRegressor(learning_rate_init=0.01, max_iter=999999, hidden_layer_sizes=np.shape(250,))
-times = 1
+MLP=MLPRegressor(hidden_layer_sizes=(random.randint(50, 500),), activation=random.choice(['relu', 'tanh', 'logistic', 'identity']), alpha=random.uniform(0.001, 0.0001), batch_size='auto', learning_rate=random.choice(['constant', 'invscaling', 'adaptive']), learning_rate_init=random.uniform(0.05, 0.0005), power_t=random.uniform(0.2, 0.8), max_iter=1461, shuffle=random.choice([True, False]), random_state=None, tol=random.uniform(0.001, 0.00001), verbose=random.choice([True, False]), warm_start=random.choice([True, False]), momentum=random.uniform(0.1, 1), nesterovs_momentum=random.choice([True, False]), early_stopping=random.choice([True, False]), validation_fraction=random.uniform(0.01, 1), beta_1=random.uniform(0.1, 1), beta_2=random.uniform(0.001, 0.999), epsilon=random.uniform(10**-7, 10**-9), n_iter_no_change=random.randint(5, 20), max_fun=random.randint(1500, 150000))
+times = 0
 
 traindf=pd.read_csv("train.csv",index_col=0)
 
@@ -60,6 +61,6 @@ prediction=pd.DataFrame(MLP.predict(Xtest), columns = ["SalePrice"])
 
 prediction.index.name = "Id"
 
-prediction.index+=1461 * 2**times
+prediction.index+=1461
 
 prediction.to_csv("housePrediction.csv")
